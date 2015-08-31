@@ -204,11 +204,15 @@ class Lexer
             $this->pushToken(Token::T_DATE, $value);
             $this->moveCursor($value);
         } elseif (
-            strlen($value) === 20 && ctype_digit($value[0]) && strpos($value, '-') === 4 && strpos($value, ':') === 13 &&
-            preg_match('/^(?<y>\d{4})-(?<m>\d{2})-(?<d>\d{2})T(?<h>\d{2}):(?<i>\d{2}):(?<s>\d{2})Z$/', $value, $matches)
+            (strlen($value) === 20 || strlen($value) === 25 || strlen($value) === 24 || strlen($value) === 22) &&
+            ctype_digit($value[0]) && strpos($value, '-') === 4 && strpos($value, ':') === 13 &&
+            preg_match('/^(?<y>\d{4})-(?<m>\d{2})-(?<d>\d{2})T(?<h>\d{2}):(?<i>\d{2}):(?<s>\d{2})(?:Z|(?:-|\+)(?<th>\d{2})(?::?(?<tm>\d{2}))?)$/', $value, $matches)
         ) {
             if (!checkdate($matches['m'], $matches['d'], $matches['y']) ||
-                !($matches['h'] < 24 && $matches['i'] < 60 && $matches['s'] < 60)) {
+                !($matches['h'] < 24 && $matches['i'] < 60 && $matches['s'] < 60) ||
+                isset($matches['th']) && ($matches['th'] > 12 || $matches['th'] < 0) ||
+                isset($matches['tm']) && ($matches['tm'] > 59 || $matches['tm'] < 0)
+            ) {
                 throw new SyntaxErrorException(sprintf('Invalid datetime value "%s"', $value));
             }
 

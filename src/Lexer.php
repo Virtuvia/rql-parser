@@ -210,7 +210,7 @@ class Lexer
         ) {
             if (!checkdate($matches['m'], $matches['d'], $matches['y']) ||
                 !($matches['h'] < 24 && $matches['i'] < 60 && $matches['s'] < 60) ||
-                isset($matches['th']) && ($matches['th'] > 12 || $matches['th'] < 0) ||
+                isset($matches['th']) && ($matches['th'] > 15 || $matches['th'] < 0) ||
                 isset($matches['tm']) && ($matches['tm'] > 59 || $matches['tm'] < 0)
             ) {
                 throw new SyntaxErrorException(sprintf('Invalid datetime value "%s"', $value));

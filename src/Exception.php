@@ -1,6 +1,6 @@
 <?php
 namespace Graviton\RqlParser;
 
-interface Exception
+interface Exception extends \Throwable
 {
 }
